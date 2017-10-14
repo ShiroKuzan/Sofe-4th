@@ -1,4 +1,4 @@
-#include "Board.h"
+#include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
 USING_NS_CC;
@@ -40,16 +40,18 @@ void Board::initTiles()
     
     firstTileSize = stoneTile->getContentSize();
     firstTilePosition = stoneTile->getPosition();
+    int counter=0;
     
     //6 tiles
     for(int i = 1; i < 7; i++)
     {
+        if(sceneNames[i-1] == "Drow" || sceneNames[i-1] == "Stacking"){
+        counter++;
         Sprite* tile = Sprite::create("grass.png");
         
         tile->setScale(0.85, 0.5);
         
-        float xPosition = screenSize.width / 7 * i + tile->getContentSize().width / 2;
-        
+        float xPosition = screenSize.width / 3 * counter + firstTileSize.width / 2;
         tile->setPosition(Vec2(xPosition, yPosition));
         
         addChild(tile);
@@ -61,6 +63,7 @@ void Board::initTiles()
         
         tile->addChild(label);
         label->setString(sceneNames[i-1]);
+        }
     }
 }
 
@@ -94,19 +97,31 @@ void Board::initClickListener()
 
 void Board::stopDiceAndMove()
 {
+    if(sceneNames[actualNumber-1]=="Drow" || sceneNames[actualNumber-1]=="Stacking"){
     stopDice();
-    
+    int counter=0;
+    if(sceneNames[actualNumber-1]=="Drow"){
+        counter=1;
+    }else{
+        counter=2;
+    }
     Size screenSize = Director::getInstance()->getVisibleSize();
     
-    Vec2 finalPosition = Vec2(screenSize.width / 7 * actualNumber + firstTileSize.width / 2, playerSprite->getPosition().y);
+    Vec2 finalPosition = Vec2(screenSize.width / 3 * counter + firstTileSize.width / 2, playerSprite->getPosition().y);
     
-    auto jumps = JumpTo::create(actualNumber * 0.6, finalPosition, 60, actualNumber);
+    auto jumps = JumpTo::create(counter * 0.6, finalPosition, 60, counter);
     
     playerSprite->runAction(jumps);
-    
+
     schedule([=](float dt){
-        Director::getInstance()->pushScene(sceneConstructors[actualNumber-1]());
-    }, actualNumber, 1, 0, "changeScene");
+        if(sceneNames[actualNumber-1]=="Drow"){
+            Director::getInstance()->pushScene(Drow::createScene());
+        }else{
+            Director::getInstance()->pushScene(Stacking::createScene());
+        }
+}, counter, 1, 0, "changeScene");
+        
+    }
 }
 
 void Board::startDice()
@@ -119,6 +134,10 @@ void Board::startDice()
     
     addChild(diceLabel);
     
+    auto diceSprite = Sprite::create("dice1.png");
+    diceSprite->setPosition(Vec2(screenSize/3.f * 2.f));
+    addChild(diceSprite);
+    
     schedule([=](float dt){
 
         actualNumber %= sceneConstructors.size();
@@ -127,6 +146,19 @@ void Board::startDice()
         string text = "";
         text.push_back(actualNumber+'0');
         diceLabel->setString(text);
+        if(actualNumber==1){
+        diceSprite->setTexture("dice1.png");
+        }else if(actualNumber==2){
+            diceSprite->setTexture("dice2.png");
+    }else if(actualNumber==3){
+        diceSprite->setTexture("dice3.png");
+}else if(actualNumber==4){
+    diceSprite->setTexture("dice4.png");
+}else if(actualNumber==5){
+    diceSprite->setTexture("dice5.png");
+}else if(actualNumber==6){
+    diceSprite->setTexture("dice6.png");
+}
         
     }, 0.1f, -1, 0, "changeDiceNumber");
     

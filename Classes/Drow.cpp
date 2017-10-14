@@ -73,7 +73,11 @@ void Drow::initClickListener()
 
 bool Drow::isTouchingTheCircle()
 {
-    return true;
+    bool flag = false;
+    //if(barSprite.getPosition==circleSprite.getPosition){
+      //  flag=true;
+    //}
+    return flag;
 }
 
 void Drow::addPunctuation()

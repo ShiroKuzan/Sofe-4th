@@ -158,12 +158,16 @@ set(GAME_SRC
         ${PLATFORM_SPECIFIC_SRC}
         Classes/AppDelegate.cpp
         Classes/HelloWorldScene.cpp
+	Classes/Drow.cpp
+	Classes/Stacking.cpp
         )
 
 set(GAME_HEADERS
         ${PLATFORM_SPECIFIC_HEADERS}
         Classes/AppDelegate.h
         Classes/HelloWorldScene.h
+	Classes/Drow.h
+	Classes/Stacking.h
         )
 
 # add the executable
